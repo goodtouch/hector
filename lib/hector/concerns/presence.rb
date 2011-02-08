@@ -44,6 +44,14 @@ module Hector
             end
             respond_with("376", nickname, :source => Hector.server_name, :text => "End of MOTD command")
           end
+          Hector.auto_join.each do |channel|
+            channel = Channel.find_or_create(channel)
+            if channel.join(self)
+              channel.broadcast(:join, :source => source, :text => channel.name)
+              respond_to_topic(channel)
+              respond_to_names(channel)
+            end
+          end
         end
 
         def deliver_quit_message
