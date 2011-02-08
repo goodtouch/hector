@@ -37,7 +37,13 @@ module Hector
       protected
         def deliver_welcome_message
           respond_with("001", nickname, :text => "Welcome to IRC")
-          respond_with("422", :text => "MOTD File is missing")
+          if Hector.motd
+            respond_with("375", nickname, :source => Hector.server_name, :text => "- #{Hector.server_name} Message of the day -")
+            Hector.motd.split("\n").each do |line|
+              respond_with("372", nickname, :source => Hector.server_name, :text => "- #{line}")
+            end
+            respond_with("376", nickname, :source => Hector.server_name, :text => "End of MOTD command")
+          end
         end
 
         def deliver_quit_message
