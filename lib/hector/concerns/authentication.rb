@@ -4,6 +4,7 @@ module Hector
       def on_user
         @username = request.args.first
         @realname = request.text
+        @password = ""
         authenticate
       end
 
